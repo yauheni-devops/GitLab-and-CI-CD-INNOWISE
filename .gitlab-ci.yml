@@ -1,0 +1,20 @@
+stages:  
+  - build
+  - test
+
+# Задача стадии build
+build_job:
+  stage: build
+  script:
+    - echo "Building..."
+
+# Задачи стадии test
+unit_test_job:
+  stage: test
+  script:
+    - echo "Running unit tests..."
+
+integration_test_job:
+  stage: test
+  script:
+    - echo "Running integration tests..."
