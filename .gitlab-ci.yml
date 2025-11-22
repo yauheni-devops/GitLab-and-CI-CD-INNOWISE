@@ -36,10 +36,11 @@ unit_test_job:
       - report.xml
     reports:
       junit: report.xml
-
-# Используем квадратные скобки, чтобы не мучиться с отступами
+      
 deploy_to_prod:
   stage: deploy
+  # Используем формат списка в одну строку [ ... , ... ]
+  # Тут пробелы и отступы не сломают пайплайн
   script: ["echo Starting deploy...", "echo Deploying to $PROD_SERVER_IP...", "echo Using token: $PROD_API_TOKEN"]
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
