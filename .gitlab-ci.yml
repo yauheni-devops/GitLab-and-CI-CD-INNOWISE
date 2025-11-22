@@ -46,12 +46,11 @@ integration_test_job:
   script:
     - echo "Running integration tests (placeholder)..."
 
-deploy_to_prod:
+ddeploy_to_prod:
   stage: deploy
   script:
     - echo "Starting deploy..."
-    # GitLab сам подставит значения вместо переменных
     - echo "Deploying to $PROD_SERVER_IP..."
     - echo "Using token: $PROD_API_TOKEN"
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" # Важное условие!    
+    - if: $CI_COMMIT_BRANCH == "main"
