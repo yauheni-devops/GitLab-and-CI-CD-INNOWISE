@@ -3,7 +3,8 @@ image: python:3.10-slim
 stages:
   - build
   - test
-  - deploy
+  - deploy_staging
+  - deploy_prod
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -12,6 +13,7 @@ cache:
   paths:
     - .cache/pip
 
+# --- BUILD STAGE ---
 build_job:
   stage: build
   script:
@@ -24,6 +26,7 @@ build_job:
       - venv/
     expire_in: 1 hour
 
+# --- TEST STAGE ---
 unit_test_job:
   stage: test
   script:
@@ -36,11 +39,29 @@ unit_test_job:
       - report.xml
     reports:
       junit: report.xml
-      
-deploy_to_prod:
-  stage: deploy
-  # Используем формат списка в одну строку [ ... , ... ]
-  # Тут пробелы и отступы не сломают пайплайн
-  script: ["echo Starting deploy...", "echo Deploying to $PROD_SERVER_IP...", "echo Using token: $PROD_API_TOKEN"]
+
+integration_test_job:
+  stage: test
+  script: ["echo Running integration tests..."]
+
+# --- DEPLOY STAGING (Автомат для main) ---
+deploy_staging:
+  stage: deploy_staging
+  environment:
+    name: staging
+  script: ["echo Deploying to Staging Environment..."]
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
+
+# --- DEPLOY PRODUCTION (Ручной для main) ---
+deploy_production:
+  stage: deploy_prod
+  environment:
+    name: production
+  script: 
+    - echo "Deploying to Production Server $PROD_SERVER_IP..."
+    - echo "Using token $PROD_API_TOKEN"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
