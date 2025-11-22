@@ -42,11 +42,11 @@ integration_test_job:
   script:
     - echo "Running integration tests (placeholder)..."
 
-deploy_to_prod:
+deploy:
   stage: deploy
   script:
-    - echo "Starting deploy..."
-    - echo "Deploying to $PROD_SERVER_IP..."
-    - echo "Using token: $PROD_API_TOKEN"
+    - echo "Starting deploy..."              # <--- Дефис правее, чем буква 's' в script
+    - echo "Deploying to $PROD_SERVER_IP..." # <--- Здесь тоже 2 пробела отступа
+    - echo "Using token: $PROD_API_TOKEN"    # <--- И здесь
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
