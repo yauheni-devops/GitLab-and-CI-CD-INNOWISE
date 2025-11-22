@@ -46,7 +46,7 @@ integration_test_job:
   script:
     - echo "Running integration tests (placeholder)..."
 
-ddeploy_to_prod:
+deploy_to_prod:
   stage: deploy
   script:
     - echo "Starting deploy..."
