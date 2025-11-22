@@ -1,20 +1,46 @@
-stages:  
+image: python:3.10-slim
+
+stages:
   - build
   - test
 
-# Задача стадии build
+# Настройка кэша для pip (чтобы не качать пакеты каждый раз из интернета)
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+# Задача 1: Установка зависимостей
 build_job:
   stage: build
   script:
-    - echo "Building..."
+    - echo "Installing dependencies..."
+    - python -m venv venv            # Создаем виртуальное окружение
+    - source venv/bin/activate       # Активируем его
+    - pip install -r requirements.txt
+  artifacts:
+    paths:
+      - venv/                        # Передаем папку venv следующей стадии
+    expire_in: 1 hour                # Артефакт удалится через час (экономим место)
 
-# Задачи стадии test
+# Задача 2: Запуск Unit-тестов
 unit_test_job:
   stage: test
   script:
     - echo "Running unit tests..."
+    - source venv/bin/activate       # Активируем окружение из артефакта build_job
+    - pytest --junitxml=report.xml   # Запускаем тесты с генерацией XML отчета
+  artifacts:
+    when: always                     # Сохранять отчет даже если тесты упали
+    paths:
+      - report.xml                   # Сохраняем сам файл отчета
+    reports:
+      junit: report.xml              # Говорим GitLab, что это именно отчет тестов (для красивого UI)
 
+# Оставим integration_test_job как заглушку, если хотите
 integration_test_job:
   stage: test
   script:
-    - echo "Running integration tests..."
+    - echo "Running integration tests (placeholder)..."
