@@ -5,7 +5,6 @@ stages:
   - test
   - deploy
 
-# Настройка кэша для pip
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
@@ -13,7 +12,6 @@ cache:
   paths:
     - .cache/pip
 
-# Задача 1: Установка зависимостей
 build_job:
   stage: build
   script:
@@ -26,7 +24,6 @@ build_job:
       - venv/
     expire_in: 1 hour
 
-# Задача 2: Запуск Unit-тестов
 unit_test_job:
   stage: test
   script:
@@ -40,13 +37,11 @@ unit_test_job:
     reports:
       junit: report.xml
 
-# Заглушка для интеграционных тестов
 integration_test_job:
   stage: test
   script:
     - echo "Running integration tests (placeholder)..."
 
-# Задача Деплоя (Новая)
 deploy_to_prod:
   stage: deploy
   script:
