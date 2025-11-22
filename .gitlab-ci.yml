@@ -36,11 +36,11 @@ unit_test_job:
       - report.xml
     reports:
       junit: report.xml
-
+      
 deploy_to_prod:
   stage: deploy
-  script:
-    - echo "Deploying..."
-    - echo "Using token: $PROD_API_TOKEN"
+  # Используем формат списка в одну строку [ ... , ... ]
+  # Тут пробелы и отступы не сломают пайплайн
+  script: ["echo Starting deploy...", "echo Deploying to $PROD_SERVER_IP...", "echo Using token: $PROD_API_TOKEN"]
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
