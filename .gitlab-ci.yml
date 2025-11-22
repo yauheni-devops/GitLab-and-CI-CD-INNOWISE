@@ -5,7 +5,7 @@ stages:
   - test
   - deploy
 
-# Настройка кэша для pip (чтобы не качать пакеты каждый раз из интернета)
+# Настройка кэша для pip
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
@@ -18,34 +18,35 @@ build_job:
   stage: build
   script:
     - echo "Installing dependencies..."
-    - python -m venv venv            # Создаем виртуальное окружение
-    - source venv/bin/activate       # Активируем его
+    - python -m venv venv
+    - source venv/bin/activate
     - pip install -r requirements.txt
   artifacts:
     paths:
-      - venv/                        # Передаем папку venv следующей стадии
-    expire_in: 1 hour                # Артефакт удалится через час (экономим место)
+      - venv/
+    expire_in: 1 hour
 
 # Задача 2: Запуск Unit-тестов
 unit_test_job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - source venv/bin/activate       # Активируем окружение из артефакта build_job
-    - pytest --junitxml=report.xml   # Запускаем тесты с генерацией XML отчета
+    - source venv/bin/activate
+    - pytest --junitxml=report.xml
   artifacts:
-    when: always                     # Сохранять отчет даже если тесты упали
+    when: always
     paths:
-      - report.xml                   # Сохраняем сам файл отчета
+      - report.xml
     reports:
-      junit: report.xml              # Говорим GitLab, что это именно отчет тестов (для красивого UI)
+      junit: report.xml
 
-# Оставим integration_test_job как заглушку, если хотите
+# Заглушка для интеграционных тестов
 integration_test_job:
   stage: test
   script:
     - echo "Running integration tests (placeholder)..."
 
+# Задача Деплоя (Новая)
 deploy_to_prod:
   stage: deploy
   script:
